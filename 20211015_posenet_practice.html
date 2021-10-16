@@ -1,0 +1,32 @@
+<html>
+  <head>
+    <!-- Load TensorFlow.js -->
+    <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs"></script>
+    <!-- Load Posenet -->
+    <script src="https://cdn.jsdelivr.net/npm/@tensorflow-models/posenet"></script>
+ </head>
+
+  <body>
+    <!-- <img id='cat' src='20180514173606.jpeg '/> -->
+    <video id="video" width="600" height="500" autoplay="1" style="position:absolute;"></video>
+    <canvas id="canvas" width="600" height="500" style="position:absolute;"></canvas>
+  </body>
+  <!-- Place your code in the script tag below. You can also use an external .js file -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/stats.js/r16/Stats.js"></script>
+  <script src="posenet_practice_camera.js"></script>
+  <!-- <script src="/20211016_posenet_demo_practice/camera.js"></script> -->
+  <!-- <script>
+    var flipHorizontal = false;
+
+    var imageElement = document.getElementById('cat');
+
+    posenet.load().then(function(net) {
+      const pose = net.estimateSinglePose(imageElement, {
+        flipHorizontal: true
+      });
+      return pose;
+    }).then(function(pose){
+      console.log(pose);
+    })
+  </script> -->
+</html>
