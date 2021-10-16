@@ -1,17 +1,20 @@
 <html>
   <head>
+    <!-- Load SkyWay -->
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="https://cdn.webrtc.ecl.ntt.com/skyway-4.4.1.js"></script>
     <!-- Load TensorFlow.js -->
     <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs"></script>
     <!-- Load Posenet -->
     <script src="https://cdn.jsdelivr.net/npm/@tensorflow-models/posenet"></script>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <script src="https://cdn.webrtc.ecl.ntt.com/skyway-4.4.1.js"></script>
  </head>
 
   <body>
     <!-- <img id='cat' src='20180514173606.jpeg '/> -->
     <p id="my-id"></p>
+    <input id="their-id"></input>
+  <button id="make-call">発信</button>
     <video id="video" width="600" height="500" autoplay="1" style="position:absolute;"></video>
     <canvas id="canvas" width="600" height="500" style="position:absolute;"></canvas>
 
