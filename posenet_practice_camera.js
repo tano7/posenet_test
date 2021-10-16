@@ -7,7 +7,14 @@ const contentHeight = 500;
 const minConfidence = 0.5;
 const color = 'aqua';
 
-// import {drawBoundingBox, drawKeypoints, drawSkeleton, isMobile, toggleLoadingUI, tryResNetButtonName, tryResNetButtonText, updateTryResNetButtonDatGuiCss} from './demo_util';
+const peer = new Peer({
+    key: '2373a523-a686-4c3f-887b-58dc1f35de18',
+    debug: 3
+  });
+
+peer.on('open', () => {
+    document.getElementById('my-id').textContent = peer.id;
+});
 
 bindPage();
 
