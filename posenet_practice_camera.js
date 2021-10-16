@@ -40,7 +40,7 @@ peer.on('call', mediaConnection => {
     mediaConnection.answer(localStream);
     setEventListener(mediaConnection);
   });
-  
+
 
 
 bindPage();
@@ -73,7 +73,7 @@ async function setupCamera() {
 
     if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
         const stream = await navigator.mediaDevices.getUserMedia({
-            'audio': false,
+            'audio': true,
             'video': true});
         video.srcObject = stream;
 
