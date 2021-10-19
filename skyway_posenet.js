@@ -98,7 +98,7 @@ async function bindPage() {
         video = await loadVideo(); // video属性をロード
     } catch(e) {
         console.error(e);
-        return;
+        //return;
     }
     detectPoseInRealTime(video, net);
 }
