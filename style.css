@@ -43,6 +43,10 @@ video {
   width: 30%;
 }
 
+.p2p-media .canvas {
+  width: 30%;
+}
+
 /* p2p-data styles */
 .p2p-data {
   display: grid;
