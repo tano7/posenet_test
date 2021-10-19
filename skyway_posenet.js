@@ -107,12 +107,12 @@ async function loadVideo() {
 // video属性からストリームを取得する
 async function setupCamera() {
     const video = document.getElementById('js-local-stream');
-    //video.width = contentWidth;
-    //video.height = contentHeight;
+    video.width = contentWidth;
+    video.height = contentHeight;
 
     if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
         const stream = await navigator.mediaDevices.getUserMedia({
-            'audio': false,
+            'audio': true,
             'video': true});
         video.srcObject = stream;
         // video.playsInline = true;
