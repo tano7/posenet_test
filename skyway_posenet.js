@@ -107,8 +107,8 @@ async function loadVideo() {
 // video属性からストリームを取得する
 async function setupCamera() {
     const video = document.getElementById('js-local-stream');
-    video.width = contentWidth;
-    video.height = contentHeight;
+    // video.width = contentWidth;
+    // video.height = contentHeight;
 
     if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
         const stream = await navigator.mediaDevices.getUserMedia({
@@ -144,8 +144,8 @@ function detectPoseInRealTime(video, net) {
     const ctx = canvas.getContext('2d');
     const flipHorizontal = true; // since images are being fed from a webcam
 
-    canvas.width = contentWidth;
-    canvas.height = contentHeight;
+    // canvas.width = contentWidth;
+    // canvas.height = contentHeight;
 
     async function poseDetectionFrame() {
         stats.begin();
