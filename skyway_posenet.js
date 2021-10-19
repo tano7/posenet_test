@@ -12,13 +12,6 @@ let localStream;
 // const Peer = window.Peer;
 (async function main() {
 //SkyWayPeer生成パート
-const peer = new Peer({
-    key: '2373a523-a686-4c3f-887b-58dc1f35de18',
-    debug: 3
-  });
-peer.on('open', () => {
-    document.getElementById('my-id').textContent = peer.id;
-});
 
 const localVideo = document.getElementById('js-local-stream');
 const localId = document.getElementById('js-local-id');
@@ -34,10 +27,10 @@ meta.innerText = `
     SDK: ${sdkSrc ? sdkSrc.src : 'unknown'}
   `.trim();
 
-// const peer = (window.peer = new Peer({
-// key: window.__SKYWAY_KEY__,
-// debug: 3,
-// }));
+const peer = (window.peer = new Peer({
+key: window.__SKYWAY_KEY__,
+debug: 3,
+}));
 
 // Register caller handler
 callTrigger.addEventListener('click', () => {
