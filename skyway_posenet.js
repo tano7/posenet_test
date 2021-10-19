@@ -9,38 +9,77 @@ const color = 'aqua';
 
 let localStream;
 
-//SkyWayPeer生成パート
-const peer = new Peer({
-    key: '2373a523-a686-4c3f-887b-58dc1f35de18',
-    debug: 3
-  });
-peer.on('open', () => {
-    document.getElementById('my-id').textContent = peer.id;
+const Peer = window.Peer;
+
+const localVideo = document.getElementById('js-local-stream');
+const localId = document.getElementById('js-local-id');
+const callTrigger = document.getElementById('js-call-trigger');
+const closeTrigger = document.getElementById('js-close-trigger');
+const remoteVideo = document.getElementById('js-remote-stream');
+const remoteId = document.getElementById('js-remote-id');
+const meta = document.getElementById('js-meta');
+const sdkSrc = document.querySelector('script[src*=skyway]');
+
+meta.innerText = `
+    UA: ${navigator.userAgent}
+    SDK: ${sdkSrc ? sdkSrc.src : 'unknown'}
+  `.trim();
+
+const peer = (window.peer = new Peer({
+key: window.__SKYWAY_KEY__,
+debug: 3,
+}));
+
+// Register caller handler
+callTrigger.addEventListener('click', () => {
+    // Note that you need to ensure the peer has connected to signaling server
+    // before using methods of peer instance.
+    if (!peer.open) {
+      return;
+    }
+
+    const mediaConnection = peer.call(remoteId.value, localStream);
+
+    mediaConnection.on('stream', async stream => {
+      // Render remote stream for caller
+      remoteVideo.srcObject = stream;
+      remoteVideo.playsInline = true;
+      await remoteVideo.play().catch(console.error);
 });
 
-// 発信処理
-document.getElementById('make-call').onclick = () => {
-    const theirID = document.getElementById('their-id').value;
-    const mediaConnection = peer.call(theirID, localStream);
-    setEventListener(mediaConnection);
-  };
-  
-  // イベントリスナを設置する関数
-  const setEventListener = mediaConnection => {
-    mediaConnection.on('stream', stream => {
-      // video要素にカメラ映像をセットして再生
-      const videoElm = document.getElementById('their-video')
-      videoElm.srcObject = stream;
-      videoElm.play();
-    });
-  }
+mediaConnection.once('close', () => {
+    remoteVideo.srcObject.getTracks().forEach(track => track.stop());
+    remoteVideo.srcObject = null;
+});
 
-  //着信処理
+closeTrigger.addEventListener('click', () => mediaConnection.close(true));
+});
+
+peer.once('open', id => (localId.textContent = id));
+
+// Register callee handler
 peer.on('call', mediaConnection => {
-    mediaConnection.answer(localStream);
-    setEventListener(mediaConnection);
-  });
+mediaConnection.answer(localStream);
 
+mediaConnection.on('stream', async stream => {
+    // Render remote stream for callee
+    remoteVideo.srcObject = stream;
+    remoteVideo.playsInline = true;
+    await remoteVideo.play().catch(console.error);
+});
+
+mediaConnection.once('close', () => {
+    remoteVideo.srcObject.getTracks().forEach(track => track.stop());
+    remoteVideo.srcObject = null;
+});
+
+closeTrigger.addEventListener('click', () => mediaConnection.close(true));
+});
+
+peer.on('error', console.error);
+
+
+//以下PoseNetぱーと
 bindPage();
 
 async function bindPage() {
