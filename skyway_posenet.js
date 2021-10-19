@@ -98,7 +98,7 @@ async function bindPage() {
         video = await loadVideo(); // video属性をロード
     } catch(e) {
         console.error(e);
-        //return;
+        return;
     }
     detectPoseInRealTime(video, net);
 }
@@ -113,7 +113,7 @@ async function loadVideo() {
 // カメラのセットアップ
 // video属性からストリームを取得する
 async function setupCamera() {
-    const video = document.getElementById('video');
+    const video = document.getElementById('js-local-stream');
     video.width = contentWidth;
     video.height = contentHeight;
 
