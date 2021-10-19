@@ -99,7 +99,7 @@ async function bindPage() {
 // video属性のロード
 async function loadVideo() {
     const video = await setupCamera(); // カメラのセットアップ
-    video.play();
+    video.play().catch(console.error);
     return video;
 }
 
@@ -119,8 +119,6 @@ async function setupCamera() {
 
         //SkyWayで相手に映像を返すためにグローバルに保存しておく
         localStream = stream;
-
-
 
         return new Promise(resolve => {
             video.onloadedmetadata = () => {
@@ -177,7 +175,7 @@ function detectPoseInRealTime(video, net) {
             // }
         });
 
-        console.log(pose);
+        //console.log(pose);
 
         stats.end();
 
