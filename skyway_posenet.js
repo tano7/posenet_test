@@ -99,7 +99,7 @@ async function bindPage() {
 // video属性のロード
 async function loadVideo() {
     const video = await setupCamera(); // カメラのセットアップ
-    video.play().catch(console.error);
+    // video.play().catch(console.error);
     return video;
 }
 
@@ -116,17 +116,15 @@ async function setupCamera() {
             'video': true});
         video.srcObject = stream;
         video.playsInline = true;
+        video.play();
 
         //SkyWayで相手に映像を返すためにグローバルに保存しておく
         localStream = stream;
 
-        return new Promise(() =>
-            // resolve => {
-            // video.onloadedmetadata = () => {
-                {resolve(video);}
-            )
-            // };
-        // });
+        return new Promise(resolve => {
+            video.onloadedmetadata = () => {
+                resolve(video);
+        }});
     } else {
         const errorMessage = "This browser does not support video capture, or this device does not have a camera";
         alert(errorMessage);
