@@ -99,7 +99,7 @@ async function bindPage() {
 // video属性のロード
 async function loadVideo() {
     const video = await setupCamera(); // カメラのセットアップ
-    // video.play().catch(console.error);
+    video.play().catch(console.error);
     return video;
 }
 
@@ -115,8 +115,7 @@ async function setupCamera() {
             'audio': false,
             'video': true});
         video.srcObject = stream;
-        video.playsInline = true;
-        video.play();
+        // video.playsInline = true;
 
         //SkyWayで相手に映像を返すためにグローバルに保存しておく
         localStream = stream;
