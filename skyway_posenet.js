@@ -10,7 +10,7 @@ const color = 'aqua';
 let localStream;
 
 // const Peer = window.Peer;
-
+(async function main() {
 //SkyWayPeer生成パート
 const peer = new Peer({
     key: '2373a523-a686-4c3f-887b-58dc1f35de18',
@@ -86,7 +86,7 @@ closeTrigger.addEventListener('click', () => mediaConnection.close(true));
 });
 
 peer.on('error', console.error);
-
+})();
 
 //以下PoseNetぱーと
 bindPage();
