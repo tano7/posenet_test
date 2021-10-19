@@ -115,9 +115,12 @@ async function setupCamera() {
             'audio': false,
             'video': true});
         video.srcObject = stream;
+        video.playsInline = true;
 
         //SkyWayで相手に映像を返すためにグローバルに保存しておく
         localStream = stream;
+
+
 
         return new Promise(resolve => {
             video.onloadedmetadata = () => {
