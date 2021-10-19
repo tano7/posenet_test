@@ -124,7 +124,8 @@ async function setupCamera() {
         return new Promise(resolve => {
             video.onloadedmetadata = () => {
                 resolve(video);
-        }});
+            };
+        });
     } else {
         const errorMessage = "This browser does not support video capture, or this device does not have a camera";
         alert(errorMessage);
