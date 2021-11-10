@@ -13,6 +13,7 @@ let localStream;
 // (async function main() {
 //SkyWayPeer生成パート
 
+// 通話で使うElement達
 const localVideo = document.getElementById('js-local-stream');
 const localId = document.getElementById('js-local-id');
 const callTrigger = document.getElementById('js-call-trigger');
@@ -21,6 +22,13 @@ const remoteVideo = document.getElementById('js-remote-stream');
 const remoteId = document.getElementById('js-remote-id');
 const meta = document.getElementById('js-meta');
 const sdkSrc = document.querySelector('script[src*=skyway]');
+
+// データ送受信で使うElement達
+const localText = document.getElementById('js-local-text');
+const connectTrigger = document.getElementById('js-connect-trigger');
+const closeTrigger = document.getElementById('js-close-trigger');
+const sendTrigger = document.getElementById('js-send-trigger');
+const messages = document.getElementById('js-messages');
 
 meta.innerText = `
     UA: ${navigator.userAgent}
@@ -175,7 +183,7 @@ function detectPoseInRealTime(video, net) {
             // }
         });
 
-        console.log(pose);
+        //console.log(pose);
 
         stats.end();
 
