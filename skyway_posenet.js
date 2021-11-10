@@ -175,7 +175,7 @@ function detectPoseInRealTime(video, net) {
             // }
         });
 
-        //console.log(pose);
+        console.log(pose);
 
         stats.end();
 
