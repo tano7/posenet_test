@@ -112,7 +112,7 @@ async function setupCamera() {
 
     if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
         const stream = await navigator.mediaDevices.getUserMedia({
-            'audio': true,
+            'audio': false,
             'video': true});
         video.srcObject = stream;
         // video.playsInline = true;
