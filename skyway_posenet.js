@@ -8,25 +8,21 @@ const minConfidence = 0.5;
 const color = 'aqua';
 
 let localStream;
+let pose_record; //姿勢データがハッシュで入ってる．
 
-// const Peer = window.Peer;
-// (async function main() {
 //SkyWayPeer生成パート
-
-// 通話で使うElement達
-const localVideo = document.getElementById('js-local-stream');
 const localId = document.getElementById('js-local-id');
-const callTrigger = document.getElementById('js-call-trigger');
 const closeTrigger = document.getElementById('js-close-trigger');
-const remoteVideo = document.getElementById('js-remote-stream');
 const remoteId = document.getElementById('js-remote-id');
 const meta = document.getElementById('js-meta');
 const sdkSrc = document.querySelector('script[src*=skyway]');
-
+// 通話で使うElement達
+const localVideo = document.getElementById('js-local-stream');
+const callTrigger = document.getElementById('js-call-trigger');
+const remoteVideo = document.getElementById('js-remote-stream');
 // データ送受信で使うElement達
 const localText = document.getElementById('js-local-text');
 const connectTrigger = document.getElementById('js-connect-trigger');
-const closeTrigger = document.getElementById('js-close-trigger');
 const sendTrigger = document.getElementById('js-send-trigger');
 const messages = document.getElementById('js-messages');
 
@@ -55,39 +51,107 @@ callTrigger.addEventListener('click', () => {
       remoteVideo.srcObject = stream;
       remoteVideo.playsInline = true;
       await remoteVideo.play().catch(console.error);
+    });
+    
+    mediaConnection.once('close', () => {
+        remoteVideo.srcObject.getTracks().forEach(track => track.stop());
+        remoteVideo.srcObject = null;
+    });
+    closeTrigger.addEventListener('click', () => mediaConnection.close(true));
 });
 
-mediaConnection.once('close', () => {
-    remoteVideo.srcObject.getTracks().forEach(track => track.stop());
-    remoteVideo.srcObject = null;
+// Register connecter handler
+connectTrigger.addEventListener('click', () => {
+    // Note that you need to ensure the peer has connected to signaling server
+    // before using methods of peer instance.
+    if (!peer.open) {
+        return;
+    }
+
+    const dataConnection = peer.connect(remoteId.value);
+
+    dataConnection.once('open', async () => {
+        messages.textContent += `=== DataConnection has been opened ===\n`;
+
+        sendTrigger.addEventListener('click', onClickSend);
+    });
+
+    dataConnection.on('data', data => {
+        messages.textContent += `Remote: ${data}\n`;
+    });
+
+    dataConnection.once('close', () => {
+        messages.textContent += `=== DataConnection has been closed ===\n`;
+        sendTrigger.removeEventListener('click', onClickSend);
+    });
+
+    // Register closing handler
+    closeTrigger.addEventListener('click', () => dataConnection.close(true), {
+        once: true,
+    });
+
+    function onClickSend() {
+        const data = pose_record;
+        dataConnection.send(data);
+
+        messages.textContent += `You: ${data['keypoints']}\n`;
+        localText.value = '';
+    }
 });
 
-closeTrigger.addEventListener('click', () => mediaConnection.close(true));
-});
 
 peer.once('open', id => (localId.textContent = id));
 
 // Register callee handler
 peer.on('call', mediaConnection => {
-mediaConnection.answer(localStream);
+    mediaConnection.answer(localStream);
+    mediaConnection.on('stream', async stream => {
+        // Render remote stream for callee
+        remoteVideo.srcObject = stream;
+        remoteVideo.playsInline = true;
+        await remoteVideo.play().catch(console.error);
+    });
 
-mediaConnection.on('stream', async stream => {
-    // Render remote stream for callee
-    remoteVideo.srcObject = stream;
-    remoteVideo.playsInline = true;
-    await remoteVideo.play().catch(console.error);
+    mediaConnection.once('close', () => {
+        remoteVideo.srcObject.getTracks().forEach(track => track.stop());
+        remoteVideo.srcObject = null;
+    });
+
+    closeTrigger.addEventListener('click', () => mediaConnection.close(true));
 });
 
-mediaConnection.once('close', () => {
-    remoteVideo.srcObject.getTracks().forEach(track => track.stop());
-    remoteVideo.srcObject = null;
-});
+// Register connected peer handler
+peer.on('connection', dataConnection => {
+    dataConnection.once('open', async () => {
+        messages.textContent += `=== DataConnection has been opened ===\n`;
 
-closeTrigger.addEventListener('click', () => mediaConnection.close(true));
+        sendTrigger.addEventListener('click', onClickSend);
+    });
+
+    dataConnection.on('data', data => {
+        messages.textContent += `Remote: ${data}\n`;
+    });
+
+    dataConnection.once('close', () => {
+        messages.textContent += `=== DataConnection has been closed ===\n`;
+        sendTrigger.removeEventListener('click', onClickSend);
+    });
+
+    // Register closing handler
+    closeTrigger.addEventListener('click', () => dataConnection.close(true), {
+        once: true,
+    });
+
+    function onClickSend() {
+        const data = pose_record;
+        dataConnection.send(data);
+
+        messages.textContent += `You: ${data}\n`;
+        localText.value = '';
+    }
 });
 
 peer.on('error', console.error);
-// })();
 
 //以下PoseNetぱーと
 bindPage();
@@ -143,7 +207,7 @@ async function setupCamera() {
 function setupFPS() {
     stats.showPanel(0);  // 0: fps, 1: ms, 2: mb, 3+: custom
     document.getElementById('main').appendChild(stats.dom);
-  }
+}
 
 // 取得したストリームをestimateSinglePose()に渡して姿勢予測を実行
 // requestAnimationFrameによってフレームを再描画し続ける
@@ -178,12 +242,12 @@ function detectPoseInRealTime(video, net) {
         // });
 
         poses.forEach(({score, keypoints}) => {
-            // if(score >= minConfidence) {
-                drawKeypoints(keypoints, minConfidence, ctx);
-            // }
+                drawKeypoints(keypoints, minConfidence, ctx, 1);
         });
 
-        //console.log(pose);
+        pose_record = pose;
+
+        // console.log(pose_record);
 
         stats.end();
 
