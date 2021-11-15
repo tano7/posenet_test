@@ -133,7 +133,7 @@ function detectPoseInRealTime(video, net) {
             // }
         });
 
-        //console.log(pose);
+        console.log(pose['keypoints'][0]);
 
         stats.end();
 

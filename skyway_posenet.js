@@ -9,6 +9,7 @@ const color = 'aqua';
 
 let localStream;
 let pose_record; //姿勢データがハッシュで入ってる．
+let pose_result_test = [];
 
 //SkyWayPeer生成パート
 const localId = document.getElementById('js-local-id');
@@ -91,12 +92,10 @@ connectTrigger.addEventListener('click', () => {
     });
 
     function onClickSend() {
-        const data = pose_record;
+        const data = pose_result_test;
         dataConnection.send(data);
 
-        console.log(data);
-
-        messages.textContent += `You: ${data['keypoints']}\n`;
+        messages.textContent += `You: ${data}\n`;
         localText.value = '';
     }
 });
@@ -145,7 +144,7 @@ peer.on('connection', dataConnection => {
     });
 
     function onClickSend() {
-        const data = pose_record;
+        const data = pose_result_test;
         dataConnection.send(data);
 
         console.log(data);
@@ -183,8 +182,8 @@ async function loadVideo() {
 // video属性からストリームを取得する
 async function setupCamera() {
     const video = document.getElementById('js-local-stream');
-    // video.width = contentWidth;
-    // video.height = contentHeight;
+    video.width = contentWidth;
+    video.height = contentHeight;
 
     if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
         const stream = await navigator.mediaDevices.getUserMedia({
@@ -220,8 +219,10 @@ function detectPoseInRealTime(video, net) {
     const ctx = canvas.getContext('2d');
     const flipHorizontal = true; // since images are being fed from a webcam
 
-    // canvas.width = contentWidth;
-    // canvas.height = contentHeight;
+    canvas.width = contentWidth;
+    canvas.height = contentHeight;
+
+    canvas.style.display = "none";
 
     async function poseDetectionFrame() {
         stats.begin();
@@ -251,7 +252,14 @@ function detectPoseInRealTime(video, net) {
 
         pose_record = pose;
 
-        // console.log(pose_record);
+        // console.log(pose['keypoints'][0]['position']);
+
+        // 鼻，両目？の情報を格納，送信
+        pose_result_test[0] = pose['keypoints'][0]['position']['x'];
+        pose_result_test[1] = pose['keypoints'][1]['position']['x'];
+        pose_result_test[2] = pose['keypoints'][2]['position']['x'];
+
+        // console.log(pose_result_test);
 
         stats.end();
 

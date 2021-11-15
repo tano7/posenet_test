@@ -40,12 +40,15 @@ video {
 }
 
 .p2p-media .local-stream {
-  width: 30%;
+  /* width: 30%; */
+  width: 80%;
   
 }
 
 .p2p-media .canvas {
-  width: 30%;
+  visibility: hidden;
+  /* width: 30%; */
+  width: 0%;
 }
 
 /* p2p-data styles */
