@@ -94,6 +94,8 @@ connectTrigger.addEventListener('click', () => {
         const data = pose_record;
         dataConnection.send(data);
 
+        console.log(data);
+
         messages.textContent += `You: ${data['keypoints']}\n`;
         localText.value = '';
     }
@@ -145,6 +147,8 @@ peer.on('connection', dataConnection => {
     function onClickSend() {
         const data = pose_record;
         dataConnection.send(data);
+
+        console.log(data);
 
         messages.textContent += `You: ${data}\n`;
         localText.value = '';
